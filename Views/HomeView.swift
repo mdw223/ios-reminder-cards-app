@@ -2,9 +2,12 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var cardManager = CardManager()
+    @StateObject private var folderManager = FolderManager()
     @State private var showingCardEdit = false
     @State private var editingCardId: Int64? = nil
     @State private var dragOffset: CGFloat = 0
+    @State private var showingFolderList = false
+    @State private var showingFavoritesFolder = false
     
     private func hapticFeedback() {
         let generator = UIImpactFeedbackGenerator(style: .medium)
@@ -28,6 +31,27 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     HStack(spacing: 16) {
+                        Button(action: {
+                            hapticFeedback()
+                            showingFolderList = true
+                        }) {
+                            Image(systemName: "folder.fill")
+                                .foregroundColor(.primary)
+                                .font(.title3)
+                        }
+                        
+                        Button(action: {
+                            hapticFeedback()
+                            if let favoritesFolder = folderManager.getFavoritesFolder() {
+                                _ = folderManager.setActiveFolder(folderId: favoritesFolder.folderId!)
+                                cardManager.loadCards()
+                            }
+                        }) {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.yellow)
+                                .font(.title3)
+                        }
+                        
                         if let currentCard = cardManager.currentCard {
                             Button(action: {
                                 hapticFeedback()
@@ -103,9 +127,16 @@ struct HomeView: View {
                 CardEditView(
                     isPresented: $showingCardEdit,
                     cardId: editingCardId,
-                    cardManager: cardManager
+                    cardManager: cardManager,
+                    folderManager: folderManager
                 )
             }
+            .sheet(isPresented: $showingFolderList) {
+                FolderListView()
+            }
+        }
+        .onAppear {
+            folderManager.loadFolders()
         }
     }
     

@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+# Technical stack
+
+- Database: SQLite with Core Data wrapper 
+- Language: Swift (SwiftUI for modern UI)
+- separate databases for dev, test, prod
+- write tests 
+

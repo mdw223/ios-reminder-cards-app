@@ -5,6 +5,7 @@ Packages/
 
 # Xcode
 DerivedData/
+.derivedData/
 *.xcuserstate
 xcuserdata/
 *.xccheckout
